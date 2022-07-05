@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Dog } = require('../db.js');
+const { Dog, Op } = require('../db.js');
 const axios = require('axios');
 const router = Router();
 // Importar todos los routers;
@@ -10,13 +10,31 @@ const router = Router();
 // Ejemplo: router.use('/auth', authRouter);
 router.get('/', async (req, res, next) => {
     try {
-        const breedBD = await Dog.findAll();
-        const breedsApi = await axios.get('https://api.thedogapi.com/v1/breeds');
-        
+        const {name} = req.query
         if(name){
-            console.log('name');
+            const searchAPi = await axios.get(`https://api.thedogapi.com/v1/breeds/search?q=${name}`);
+            const respBD = await Dog.findAll({
+                where: {
+                    name: {[Op.iLike]:`%${name}%` }
+                }
+            });
+            const respApi= searchAPi.data.map(breed => {
+                return {
+                        id: breed.id,
+                        name: breed.name,
+                        height: breed.height.metric,
+                        weight: breed.weight.metric,
+                        years: breed.life_span,
+                        temper: breed.temperament,
+                        photo: `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`
+                }
+            });
+            const allResp = [...respApi, ...respBD];
+            return res.send(allResp.length > 0 ? allResp:`No se encuentra razas con el nombre: ${name}`);
         } else {
-            const resps = breedsApi.data.map(breed => {
+            const breedsBD = await Dog.findAll();
+            const resp = await axios.get('https://api.thedogapi.com/v1/breeds');
+            const breedsApi = resp.data.map(breed => {
                 return {
                     id: breed.id,
                     name: breed.name,
@@ -27,12 +45,42 @@ router.get('/', async (req, res, next) => {
                     photo: breed.image.url
                 }
             });
-            return res.send(resps);
+            console.log(breedsApi.length);
+            const allBreeds = [...breedsApi, ...breedsBD];
+            return res.send(allBreeds ? allBreeds:'Error en traer los datos');
         }
     } catch (error) {
         return res.status(400).send('Error en traer los datos');
     }
-})
+});
+
+router.get('/:id', async (req, res) =>{
+    try {
+        const {id} = req.params;
+        if(id.length <= 3){
+            const resp = await axios.get('https://api.thedogapi.com/v1/breeds');
+            const filterApi = resp.data.filter(breed => id == breed.id);
+            const searchApi = filterApi.map(breed => {
+                return {
+                    id: breed.id,
+                    name: breed.name,
+                    height: breed.height.metric,
+                    weight: breed.weight.metric,
+                    years: breed.life_span,
+                    temper: breed.temperament,
+                    photo: breed.image.url
+                }
+            })
+            return res.send(searchApi? searchApi:'no se encontraron resultados con ese ID')
+        } else {
+            id.match('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')?
+            (res.send(await Dog.findByPk(id)? await Dog.findByPk(id):'no se encontraron resultados con ese ID'))
+            :res.send('ID invalido, verifica la informacion')
+        }
+    } catch (error) {
+        res.status(400).send('Error en buscar el id')
+    }
+});
 
 router.post('/', async (req, res, next) => {
     try {
