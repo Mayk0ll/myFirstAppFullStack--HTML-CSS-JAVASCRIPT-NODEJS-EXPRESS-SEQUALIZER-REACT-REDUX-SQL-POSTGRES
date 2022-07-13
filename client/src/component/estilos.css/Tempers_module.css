@@ -1,0 +1,19 @@
+.containerTempers{
+    background-color: rgb(0, 0, 0, 0.7);
+    min-height: 65rem;
+    padding-bottom: 4rem;
+}
+.cardTempers{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+.textTempers{
+    margin: 0;
+    text-transform: capitalize;
+    color: white;
+    font-size: 2rem;
+    padding: 0.5rem 3rem;
+}
+.textTempers span{
+    color: gold;
+}

@@ -1,0 +1,18 @@
+.containerFooter{
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+    background-color: black;
+    z-index: 1;
+}
+.containerFooter h3{
+    color:  white;
+    font-size: 2rem;
+    padding: 1rem;
+    margin: 0;
+}
+
+.containerFooter h3 span{
+    color: gold;
+}

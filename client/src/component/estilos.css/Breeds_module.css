@@ -1,0 +1,70 @@
+.containerBreeds{
+    background-color: rgb(0, 0, 0, 0.9);
+    min-height: 63rem;
+    padding-bottom: 6rem;
+}
+.cardBreedsDetails{
+    display:  flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    margin-bottom: 3rem;
+}
+.btnsPags{
+    display: flex;
+    justify-content: center;
+}
+.botonBreeds{
+    margin: 1rem;
+    padding: 1rem;
+    width: 20rem;
+    border-radius: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+    border: 1px solid black;
+}
+.botonActive{
+    background-color: gold;
+    color: black;
+    cursor: pointer;
+}
+.botonActive:hover{
+    border: 1px solid white;
+}
+.botonDisable{
+    background-color: rgb(189, 189, 189);
+    color: rgb(81, 81, 81);
+}
+
+.containerBreedsFilter{
+    height: 5rem;
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    align-items: center;
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 0 1rem;
+    z-index: 1;
+    background-color: black;
+}
+
+.btnFilter{
+    margin: 0 1rem;
+    background-color: gold;
+    width: 15rem;
+    border-radius: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 1px solid black;
+    height: 3rem;
+    cursor: pointer;
+}
+.btnFilter:hover{
+    border: 1px solid white;
+}
+
+.filtros{
+height: 3rem;
+border-radius: 0.5rem;
+padding: 0 0.5rem;
+font-size: 1.5rem;
+}

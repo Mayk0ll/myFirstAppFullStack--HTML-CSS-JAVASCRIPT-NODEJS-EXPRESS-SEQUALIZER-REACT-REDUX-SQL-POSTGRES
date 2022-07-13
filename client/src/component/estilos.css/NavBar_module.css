@@ -1,0 +1,84 @@
+.navBar{
+    background-color: black;
+}
+.containerNav{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 3fr;
+    height: auto;
+}
+.logo{
+    grid-column: 1/2;
+    background-image: url('../../images/LogoNav.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 100%;
+    height: 9rem;
+}
+.routes{
+    display: flex;
+    justify-content: space-evenly;
+    grid-column: 2/3;
+    text-align: center;
+}
+.itemNavBar{
+    color: white;
+    text-decoration: none;
+    font-size: 3rem;
+    padding: 0 3rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    text-shadow: 1px 1px 5rem dodgerblue;
+    border-radius: 3rem;
+    border-bottom: 1px solid black;
+    transition: all 0.5s;
+}
+.itemNavBar:hover{
+    transition: all 0.5s;
+    border-bottom: 1px solid gold;
+    
+}
+.active{
+    color: black;
+    background-color: gold;
+    border-bottom: 1px solid gold;
+    
+}
+.active:hover{
+    color: black;
+    background-color: gold;
+    border-bottom: 1px solid gold;
+}
+
+
+@media only screen and (max-width: 990px) {
+    .containerNav{
+        grid-template-columns: 0fr 4fr;
+        height: auto;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .navBar{
+        height: auto;
+    }
+    .containerNav{
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr, 2fr, 1fr;
+    }
+    .logo{
+        margin: 1rem auto 0rem;
+        grid-column: 1/2;
+        min-width: 40%;
+        max-width: 50%;
+    }
+    .routes{
+        flex-direction: column;
+        align-items: center;
+        grid-column: 1/2;
+        margin: 2rem 0;
+    }
+    .itemNavBar{
+        width: 90%;
+    }
+}

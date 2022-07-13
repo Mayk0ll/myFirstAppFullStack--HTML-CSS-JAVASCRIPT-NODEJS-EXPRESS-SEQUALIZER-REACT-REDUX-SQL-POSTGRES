@@ -15,21 +15,25 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         height: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         weight: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         year:{
             type: DataTypes.STRING, 
             allowNull: false,
+            get() {
+                const addAnios = this.getDataValue('year');
+                return `${addAnios} years`;
+            }
         },
         photo: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'ruta'
+            defaultValue: 'https://media.istockphoto.com/vectors/wiener-dog-dressed-as-a-hot-dog-vector-illustration-vector-id1170183630?k=20&m=1170183630&s=612x612&w=0&h=vCO395llIWCLGXx1UQ2ryILW8gdK18Pkpfcgd4j9cCQ='
         }
     });
 };
