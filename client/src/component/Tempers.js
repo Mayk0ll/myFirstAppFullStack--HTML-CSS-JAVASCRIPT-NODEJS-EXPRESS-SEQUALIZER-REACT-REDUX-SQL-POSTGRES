@@ -6,7 +6,7 @@ import './estilos.css/Tempers_module.css'
 
 export const Tempers = (props) => {
     
-    let allTempers= useSelector((state) => state.temperament)
+    let allTempers = useSelector((state) => state.temperament)
     let dispatch = useDispatch();
 
     useEffect(() => {

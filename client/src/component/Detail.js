@@ -12,6 +12,7 @@ export const Detail = (props) => {
         dispatch(detailsBreed(params))
         return () => {dispatch(clearDetail())}
     }, [dispatch, params])
+    console.log(details);
     return (
         <div className="containerDetails">
             <div className="details">

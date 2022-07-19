@@ -8,7 +8,7 @@ export const Breed = ({name, weight, image, temper, id}) => {
         <div className="containerCard">
             <div className="card">
                 <div className="imageCard">
-                    <img src={image} alt="Imagen Perro" className='imgCard' />
+                    <img src={image} alt='Error' className='imgCard' />
                 </div>
                 <div className="textCard">
                     <p className='infoCard'> <span>Nombre:</span> {name}</p>

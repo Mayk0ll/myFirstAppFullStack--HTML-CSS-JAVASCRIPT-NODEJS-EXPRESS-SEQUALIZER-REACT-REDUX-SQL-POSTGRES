@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { searchBreeds, searchBreed } from "../store/actions/index";
+import { searchBreeds } from "../store/actions/index";
 import { Breed } from './Breed';
 import './estilos.css/Breeds_module.css'
 
@@ -49,12 +49,7 @@ export const Breeds = (props) => {
     }
     function filtrarPor(e){
         e.preventDefault();
-        if(e.target.name === 'aplicarCambios'){
-            dispatch(searchBreeds(filter));
-        }
-        if(e.target.name === 'searchFor'){
-            dispatch(searchBreed(search));
-        }
+        dispatch(searchBreeds(search, filter));
     }
 
     return (
@@ -79,9 +74,9 @@ export const Breeds = (props) => {
         <div className='containerBreeds'>
             <div className="cardBreedsDetails">
             {
-                arr ? arr.map((breed) => {
+                arr.length > 0 ? arr.map((breed) => {
                     return <Breed key={breed.id} id={breed.id}image={breed.photo} name={breed.name} weight={breed.weight} temper={breed.temper}/>
-                }): <div><img src="https://i.gifer.com/g0R5.gif" alt="cargando" className='gif'/></div>
+                }): <h1 className='noExisten'>No se encontraron resultados</h1>
             }
             </div>
             <div className="btnsPags">

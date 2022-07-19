@@ -1,22 +1,23 @@
 // import axios from 'axios'
 
-export function searchBreeds(filtered={breed: true, asc: true, weight: false}){
+export function searchBreeds(name='', filtered={breed: true, asc: true, weight: false}){
     return function(dispatch){
-        fetch(`http://localhost:3001/dogs`)
+        console.log(name);
+        fetch(`http://localhost:3001/dogs?name=${name}`)
         .then(response => response.json())
         .then(data => dispatch({type: 'BUSCAR_RAZAS', payload: data, filter:filtered}))
         .catch('Error en traer la informacion de las razas')
     }
 }
 
-export function searchBreed(name){
-    return function(dispatch){
-        fetch(`http://localhost:3001/dogs?name=${name}`)
-        .then(response => response.json())
-        .then(data => dispatch({type: 'BUSCAR_RAZA', payload: data}))
-        .catch('Error en traer la informacion de las razas')
-    }
-}
+// export function searchBreed(name, filtered={breed: true, asc: true, weight: false}){
+//     return function(dispatch){
+//         fetch(`http://localhost:3001/dogs?name=${name}`)
+//         .then(response => response.json())
+//         .then(data => dispatch({type: 'BUSCAR_RAZAS', payload: data, filter:filtered}))
+//         .catch('Error en traer la informacion de las razas')
+//     }
+// }
 
 export function detailsBreed(id){
     return function(dispatch) {

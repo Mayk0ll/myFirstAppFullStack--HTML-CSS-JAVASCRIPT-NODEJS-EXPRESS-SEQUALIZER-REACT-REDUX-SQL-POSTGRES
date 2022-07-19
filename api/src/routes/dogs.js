@@ -13,7 +13,8 @@ router.get('/', async (req, res, next) => {
     try {
         const {name} = req.query
         if(name){
-            const searchAPi = await axios.get(`https://api.thedogapi.com/v1/breeds/search?q=${name}`);
+            const searchAPi = await axios.get(`https://api.thedogapi.com/v1/breeds/search?q=${name}&api_key=69e2aae6-9fef-4d00-b47c-8767a1b8c9dc`);
+            // const searchAPi = await axios.get(`https://api.thedogapi.com/v1/breeds/search?q=pug&api_key=69e2aae6-9fef-4d00-b47c-8767a1b8c9dc`);
             const respBD = await Dog.findAll({
                 where: {
                     name: {[Op.iLike]:`%${name}%` },
@@ -40,19 +41,27 @@ router.get('/', async (req, res, next) => {
             })
 
             const respApi= searchAPi.data.map(breed => {
-                let temps = breed.temperament?breed.temperament:''
+                let temps = breed.temperament?breed.temperament:'';
+                let phot= '';
+                if(breed.image){
+                    phot = breed.image.url;
+                } else {
+                    phot = breed.reference_image_id?`https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`:'https://media.istockphoto.com/vectors/wiener-dog-dressed-as-a-hot-dog-vector-illustration-vector-id1170183630?k=20&m=1170183630&s=612x612&w=0&h=vCO395llIWCLGXx1UQ2ryILW8gdK18Pkpfcgd4j9cCQ='
+                }
                 return {
-                        id: breed.id,
-                        name: breed.name,
-                        height: breed.height.metric,
-                        weight: breed.weight.metric,
-                        years: breed.life_span,
-                        temper: temps,
-                        photo: `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`
+                    id: breed.id,
+                    name: breed.name,
+                    height: breed.height.metric,
+                    weight: breed.weight.metric,
+                    years: breed.life_span,
+                    temper: temps,
+                    photo: phot
                 }
             });
             const allResp = [...respApi, ...respBDFiltered];
-            return res.send(allResp.length > 0 ? allResp:`No se encuentra razas con el nombre: ${name}`);
+            
+
+            return res.json(allResp);
         } else {
             const breedsBD = await Dog.findAll({
                 include: [{model: Temper}]
@@ -101,17 +110,37 @@ router.get('/:id', async (req, res) =>{
         if(id.length <= 3){
             const resp = await axios.get('https://api.thedogapi.com/v1/breeds');
             const filterApi = resp.data.find(breed => id == breed.id);
-            let temps = filterApi.temperament?filterApi.temperament:''
-            const searchApi = {
-                id: filterApi.id,
-                name: filterApi.name,
-                height: filterApi.height.metric,
-                weight: filterApi.weight.metric,
-                years: filterApi.life_span,
-                temper: temps,
-                photo: filterApi.image.url
+            if(filterApi){
+                let temps = filterApi.temperament?filterApi.temperament:'';
+                let phot= '';
+                    if(filterApi.image){
+                        phot = filterApi.image.url;
+                    } else {
+                        phot = filterApi.reference_image_id?`https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`:'https://media.istockphoto.com/vectors/wiener-dog-dressed-as-a-hot-dog-vector-illustration-vector-id1170183630?k=20&m=1170183630&s=612x612&w=0&h=vCO395llIWCLGXx1UQ2ryILW8gdK18Pkpfcgd4j9cCQ='
+                    }
+                const searchApi = {
+                    id: filterApi.id,
+                    name: filterApi.name,
+                    height: filterApi.height.metric,
+                    weight: filterApi.weight.metric,
+                    years: filterApi.life_span,
+                    temper: temps,
+                    photo: phot
+                }
+                return res.send(searchApi)
+            } else {
+                const searchApi = {
+                    id: 'error' ,
+                    name: 'error' ,
+                    height: 'error' ,
+                    weight: 'error' ,
+                    years: 'error' ,
+                    temper: 'error',
+                    photo: 'error'
+                }
+                return res.send(searchApi)
             }
-            return res.send(searchApi? searchApi:'no se encontraron resultados con ese ID')
+            
         } else {
             if(id.match('^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')){
                 const found = await Dog.findOne({
@@ -144,25 +173,33 @@ router.get('/:id', async (req, res) =>{
 });
 
 router.post('/', async (req, res, next) => {
+    console.log(req.body);
     try {
-        const {name, height, weight, year} = req.body
+        const {name, height, weight, year, tempers} = req.body
         const newBreed = await Dog.create({
             name,
             height,
             weight,
             year,
         });  
+        let breed = await Dog.findOne({ where: {name: name} }) ;
+        console.log(breed, typeof breed);
+        await breed.addTemper(tempers);
+        
         return res.send(newBreed)  
     } catch (error) {
         return res.status(400).send('Error al Crear Raza')
     }
 })
 
-router.put('/:id/:temper', async (req, res, next) => {
-    const {id, temper} = req.params
+router.post('/:id', async (req, res, next) => {
+    const {id} = req.params 
+    const {tempers} = req.body
+    console.log(tempers); 
     let breed = await Dog.findByPk(id) ;
-    const newIdxTemper = breed.addTemper([temper]);
-    res.send('Soy get de Dogs')
+    console.log(breed, typeof breed);
+    const newIdxTemper = breed.addTemper(tempers);
+    res.send('newIdxTemper')
 })
 
 router.delete('/', (req, res, next) => {
